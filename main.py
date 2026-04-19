@@ -18,6 +18,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.get("/")
+def root():
+    return {"message": "Portfolio API is running", "status": "ok"}
+
+@app.get("/health")
+def health():
+    return {"status": "healthy"}
+
 app.include_router(login_router, prefix="/api")
 app.include_router(call_router, prefix="/api")
 app.include_router(rag_router, prefix="/api")
