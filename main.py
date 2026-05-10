@@ -1,12 +1,21 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from dotenv import load_dotenv
+import os
+
+# Load environment variables from .env file
+load_dotenv()
+
 from database import Base, engine
 from login import router as login_router
 from call import router as call_router
 from rag_api import router as rag_router
 
 # Create tables on startup
-Base.metadata.create_all(bind=engine)
+try:
+    Base.metadata.create_all(bind=engine)
+except Exception as e:
+    print(f"Database initialization failed: {e}")
 
 app = FastAPI(title="Portfolio Login API")
 
