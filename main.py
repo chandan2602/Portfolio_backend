@@ -8,8 +8,21 @@ load_dotenv()
 
 from database import Base, engine
 from login import router as login_router
-from call import router as call_router
-from rag_api import router as rag_router
+
+# Try to import optional routers
+try:
+    from call import router as call_router
+    CALL_AVAILABLE = True
+except Exception as e:
+    print(f"Call router not available: {e}")
+    CALL_AVAILABLE = False
+
+try:
+    from rag_api import router as rag_router
+    RAG_AVAILABLE = True
+except Exception as e:
+    print(f"RAG router not available: {e}")
+    RAG_AVAILABLE = False
 
 # Create tables on startup
 try:
@@ -36,5 +49,9 @@ def health():
     return {"status": "healthy"}
 
 app.include_router(login_router, prefix="/api")
-app.include_router(call_router, prefix="/api")
-app.include_router(rag_router, prefix="/api")
+
+if CALL_AVAILABLE:
+    app.include_router(call_router, prefix="/api")
+
+if RAG_AVAILABLE:
+    app.include_router(rag_router, prefix="/api")
